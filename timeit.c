@@ -13,7 +13,9 @@ Description: This file contains main functionality for a timer function
 #include <sys/wait.h>
 #include <sys/time.h>
 
-#define INTERP_BASE 10
+/*Define Vaiables*/
+/*Base of 0 for dynamic interpretation*/
+#define INTERP_BASE 0
 #define INTERVAL_S 0
 #define INTERVAL_US 500000
 
@@ -22,7 +24,6 @@ int seconds = 0;
 int ticks = 0;
 
 void handler(int sigalarm);
-int numcheck(const char* str);
 
 int main(int argc, char const *argv[]) {
     /*Define Variables*/
@@ -31,19 +32,28 @@ int main(int argc, char const *argv[]) {
     struct sigaction sa;
     struct itimerval it;
 
-    /*Vaildate Input*/
+    /*Vaildate Number of Inputs*/
     if((argc != 2)){
         printf("usage: ./timeit <seconds>\n");
         exit(EXIT_FAILURE);
     }
-    if(!(numcheck(argv[1]))){
+    /*Interpret and Validate Input*/
+    seconds = strtol(argv[1], &end, INTERP_BASE);
+    if((*end != '\0')){
         printf("%s: malformed time.\n", argv[1]);
         printf("usage: ./timeit <seconds>\n");
         exit(EXIT_FAILURE);
     }
-    seconds = strtol(argv[1], &end, INTERP_BASE);
+    if(seconds < 0){
+        printf("Invalid time(%s). Must be >= 0\n", argv[1]);
+        printf("usage: ./timeit <seconds>\n");
+        exit(EXIT_FAILURE);
+    }
+    if(seconds == 0){
+        printf("Time's up!\n");
+        return 0;
+    }
     ticks = seconds*2;
-
 
     /*Set up signal Handler*/
     sa.sa_handler = handler;
@@ -70,6 +80,7 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
+/*Handler to be executed on alarm signal*/
 void handler(int sigalarm){
     counter++;
     if(counter%2){
@@ -82,15 +93,3 @@ void handler(int sigalarm){
     }
     fflush(stdout);
 }
-
-int numcheck(const char* str){
-    int i = 0;
-    while(str[i] != '\0'){
-        if((str[i] < '0') || (str[i] > '9')){
-            return 0;
-        }
-        i++;
-    }
-    return 1;
-}
-
