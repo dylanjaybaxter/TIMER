@@ -45,7 +45,7 @@ int main(int argc, char const *argv[]) {
         exit(EXIT_FAILURE);
     }
     if(seconds < 0){
-        printf("Invalid time(%s). Must be >= 0\n", argv[1]);
+        printf("Invalid time(%s).  Must be >= 0\n", argv[1]);
         printf("usage: ./timeit <seconds>\n");
         exit(EXIT_FAILURE);
     }
