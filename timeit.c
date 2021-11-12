@@ -34,6 +34,7 @@ int main(int argc, char const *argv[]) {
     /*Vaildate Input*/
     if((argc != 2)){
         printf("usage: ./timeit <seconds>\n");
+        printf("%s: malformed time.\n", argv[1]);
         exit(EXIT_FAILURE);
     }
     if(!(numcheck(argv[1]))){
