@@ -25,9 +25,11 @@ void handler(int sigalarm);
 int numcheck(const char* str);
 
 int main(int argc, char const *argv[]) {
-    /*Define Vairables*/
+    /*Define Variables*/
     int i;
     char* end;
+    struct sigaction sa;
+    struct itimerval it;
 
     /*Vaildate Input*/
     if((argc != 2)){
@@ -43,7 +45,6 @@ int main(int argc, char const *argv[]) {
 
 
     /*Set up signal Handler*/
-    struct sigaction sa;
     sa.sa_handler = handler;
     if(-1 == sigemptyset(&sa.sa_mask)){
         perror("SIGEMPTYSET");
@@ -56,7 +57,6 @@ int main(int argc, char const *argv[]) {
     }
 
     /*Set up timer*/
-    struct itimerval it;
     it.it_interval.tv_sec =INTERVAL_S;
     it.it_interval.tv_usec = INTERVAL_US;
     it.it_value = it.it_interval;
